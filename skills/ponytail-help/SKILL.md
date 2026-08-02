@@ -1,71 +1,61 @@
----
-name: ponytail-help
-description: >
-  Quick-reference card for all ponytail modes, skills, and commands.
-  One-shot display, not a persistent mode. Trigger: /ponytail-help,
-  "ponytail help", "what ponytail commands", "how do I use ponytail".
----
+---  
+name: ponytail-help  
+description: >  
+  บัตรอ้างอิงเร่งด่วนสำหรับโหมด ทักษะ และคำสั่งต่างๆ ของ `ponytail` ทั้งหมด แสดงครั้งเดียว ไม่ใช่โหมดคงที่ กระตุ้นโดย: /ponytail-help, "ponytail help", "คำสั่งของ ponytail มีอะไรบ้าง", "ใช้ ponytail ยังไง"  
+---  
 
-# Ponytail Help
+# Ponytail Help  
+แสดงบัตรอ้างอิงนี้เมื่อถูกเรียกใช้ ทำงานเพียงครั้งเดียว อย่าเปลี่ยนโหมด อย่าเขียนไฟล์ติดฉลาก หรือเก็บข้อมูลใดๆ  
 
-Display this reference card when invoked. One-shot, do NOT change mode,
-write flag files, or persist anything.
+## ระดับ (Levels)  
+| Level | คำสั่งเรียกใช้ | เปลี่ยนแปลงอย่างไร |  
+|-------|----------------|----------------------|  
+| **Lite** | `/ponytail lite` | สร้างตามที่ขอ พร้อมชี้แจงทางเลือกที่ง่ายกว่าในหนึ่งบรรทัด |  
+| **Full** | `/ponytail` | ใช้ลำดับการพัฒนาที่บังคับ: YAGNI → stdlib → native → one line → minimum ค่าเริ่มต้น |  
+| **Ultra** | `/ponytail ultra` | แนวทางแบบรุนแรงของ YAGNI ลบก่อนเพิ่ม ท้าทายข้อกำหนดก่อนเริ่มสร้าง |  
 
-## Levels
+ระดับจะคงอยู่จนกว่าจะเปลี่ยน หรือสิ้นสุดเซสชัน  
 
-| Level | Trigger | What change |
-|-------|---------|-------------|
-| **Lite** | `/ponytail lite` | Build what's asked, name the lazier alternative in one line. |
-| **Full** | `/ponytail` | The ladder enforced: YAGNI → stdlib → native → one line → minimum. Default. |
-| **Ultra** | `/ponytail ultra` | YAGNI extremist. Deletion before addition. Challenges requirements before building. |
+## ทักษะ (Skills)  
+| ทักษะ | คำสั่งเรียกใช้ | สิ่งที่ทำ |  
+|--------|----------------|-----------|  
+| **ponytail** | `/ponytail` | โหมดความเรียบง่ายเอง โซลูชันที่ง่ายที่สุดที่ทำงานได้ |  
+| **ponytail-review** | `/ponytail-review` | ตรวจสอบปัญหาการตั้งระบบซับซ้อนเกินไป: `L42: yagni: factory, one product. Inline.` |  
+| **ponytail-audit** | `/ponytail-audit` | ตรวจสอบการตั้งระบบซับซ้อนเกินในโปรเจกต์ทั้งหมด: รายการจัดอันดับสิ่งที่ควรลบ |  
+| **ponytail-debt** | `/ponytail-debt` | รวบรวมคอมเมนต์ `ponytail:` ที่เป็นการเลื่อนงาน แล้วจัดทำบัญชีหนี้ติดตาม |  
+| **ponytail-gain** | `/ponytail-gain` | บอร์ดผลลัพธ์ที่วัดได้: โค้ดน้อยลง, ต้นทุนลดลง, ความเร็วเพิ่มขึ้น |  
+| **ponytail-help** | `/ponytail-help` | บัตรนี้เอง |  
 
-Level sticks until changed or session end.
+เครื่องมือ Codex ใช้ `@ponytail`, `@ponytail-review`, และ `@ponytail-help`; ส่วน Claude Code และ OpenCode ใช้รูปแบบคำสั่งนำหน้าสัญลักษณ์แบ็กสลาช (เช่น `/ponytail`) (OpenCode ส่งมอบทั้งหกคำสั่งในรูปแบบนี้ไว้ให้ใช้ทันที)  
 
-## Skills
+## ปิดการทำงาน  
+พูดว่า "stop ponytail" หรือ "normal mode" กลับมาใช้งานใหม่ได้ทุกเมื่อผ่าน `/ponytail` `/ponytail off` ก็ใช้ได้เช่นกัน  
 
-| Skill | Trigger | What it does |
-|-------|---------|--------------|
-| **ponytail** | `/ponytail` | Lazy mode itself. Simplest solution that works. |
-| **ponytail-review** | `/ponytail-review` | Over-engineering review: `L42: yagni: factory, one product. Inline.` |
-| **ponytail-audit** | `/ponytail-audit` | Whole-repo over-engineering audit: ranked list of what to delete. |
-| **ponytail-debt** | `/ponytail-debt` | Harvest `ponytail:` shortcut comments into a tracked ledger. |
-| **ponytail-gain** | `/ponytail-gain` | Measured-impact scoreboard: less code, less cost, more speed. |
-| **ponytail-help** | `/ponytail-help` | This card. |
+## ตั้งค่าโหมดเริ่มต้น  
+โหมดเริ่มต้น = `full` เปิดใช้งานอัตโนมัติทุกเซสชัน ปรับเปลี่ยนได้:  
 
-Codex uses `@ponytail`, `@ponytail-review`, and `@ponytail-help`; Claude Code
-and OpenCode use the slash-command forms above (OpenCode ships all six as
-slash commands).
-
-## Deactivate
-
-Say "stop ponytail" or "normal mode". Resume anytime with `/ponytail`.
-`/ponytail off` also works.
-
-## Configure Default Mode
-
-Default mode = `full`, auto-active every session. Change it:
-
-**Environment variable** (highest priority):
+**ตัวแปรสภาพแวดล้อม** (มีลำดับสูงสุด):  
 ```bash
 export PONYTAIL_DEFAULT_MODE=ultra
-```
+```  
 
-**Config file** (`~/.config/ponytail/config.json`, Windows: `%APPDATA%\ponytail\config.json`):
+**ไฟล์ตั้งค่า** (`~/.config/ponytail/config.json`, Windows: `%APPDATA%\ponytail\config.json`):  
 ```json
 { "defaultMode": "lite" }
-```
+```  
 
-Set `"off"` to disable auto-activation on session start, activate manually
-with `/ponytail` when wanted.
+ตั้งค่า `"off"` เพื่อปิดการเปิดอัตโนมัติเมื่อเริ่มเซสชัน ใช้งานเมื่อต้องการ โดยเรียกใช้ `/ponytail` ด้วยตนเอง  
 
-Resolution: env var > config file > `full`.
+ลำดับการตัดสินใจ: ตัวแปรสภาพแวดล้อม > ไฟล์ตั้งค่า > `full`  
 
-## Update
+## อัปเดต  
+เปิดใช้งานอัปเดตอัตโนมัติครั้งเดียว: เปิด `/plugin` ไปที่ตลาด (Marketplaces) เลือก `ponytail` แล้วเปิดใช้งานอัปเดตอัตโนมัติ หลังจากนั้น Claude Code จะดึงเวอร์ชันใหม่ทุกครั้งที่เริ่มต้น (รัน `/reload-plugins` เมื่อแจ้งเตือน)  
 
-Enable auto-update once: open `/plugin`, go to Marketplaces, pick ponytail, Enable auto-update. Claude Code then pulls new versions at startup (run `/reload-plugins` when it prompts). Manual refresh: `/plugin marketplace update ponytail` then `/reload-plugins`.
+อัปเดตแบบแมนนวล: `/plugin marketplace update ponytail` แล้วตามด้วย `/reload-plugins`  
 
-If `/plugin` is not recognized, your Claude Code is out of date. Update it (`npm install -g @anthropic-ai/claude-code@latest`, or `brew upgrade claude-code`) and restart. Other hosts use their own update flow.
+หาก `/plugin` ไม่รู้จัก หมายความว่าเวอร์ชันของคุณล้าสมัย ให้อัปเดตโดยใช้:  
+(`npm install -g @anthropic-ai/claude-code@latest` หรือ `brew upgrade claude-code`) แล้วรีสตาร์ทโปรแกรม  
+ผู้ใช้แพลตฟอร์มอื่นใช้กระบวนการอัปเดตของตนเอง  
 
-## More
-
-Full docs + examples: https://github.com/DietrichGebert/ponytail
+## ข้อมูลเพิ่มเติม  
+เอกสารฉบับเต็ม + ตัวอย่าง: https://github.com/DietrichGebert/ponytail
