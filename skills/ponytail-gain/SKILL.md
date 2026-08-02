@@ -1,50 +1,31 @@
----
-name: ponytail-gain
-description: >
-  Show ponytail's measured impact as a compact scoreboard: less code, less
-  cost, more speed, from the benchmark medians. One-shot display, not a
-  persistent mode, and not a per-repo number. Trigger: /ponytail-gain,
-  "ponytail gain", "what does ponytail save", "show ponytail impact",
-  "ponytail scoreboard".
----
+---  
+name: ponytail-gain  
+description: >  
+  แสดงผลลัพธ์ที่วัดได้ของ `ponytail` ในรูปแบบบอร์ดสั้นๆ: โค้ดน้อยลง, ต้นทุนลดลง, ความเร็วเพิ่มขึ้น จากค่าเฉลี่ยในชุดทดสอบมาตรฐาน แสดงครั้งเดียว ไม่ใช่โหมดคงที่ และไม่ใช่ตัวเลขเฉพาะโปรเจกต์ กระตุ้นโดย: /ponytail-gain, "ponytail gain", "ponytail ช่วยประหยัดอะไร", "แสดงผลลัพธ์ของ ponytail", "ponytail scoreboard"  
+---  
 
-# Ponytail Gain
+# Ponytail Gain  
+แสดงบอร์ดนี้เมื่อถูกเรียกใช้ ทำงานเพียงครั้งเดียว: อย่าเปลี่ยนโหมด อย่าเขียนไฟล์ติดฉลาก อย่าเก็บข้อมูลใดๆ  
 
-Display this scoreboard when invoked. One-shot: do NOT change mode, write flag
-files, or persist anything.
+ตัวเลขที่แสดงเป็นค่าเฉลี่ยจากงานทดสอบที่เผยแพร่แล้ว (5 งานประจำวัน: ตรวจสอบอีเมล, เบ็ดเส้น, รวมค่า CSV, ตัวนับถอยหลัง, จำกัดการร้องขอ; 3 โมเดล: Haiku, Sonnet, Opus) ซึ่งวัดมาจริง ไม่ใช่คำนวณจากโปรเจกต์ปัจจุบัน แหล่งข้อมูล: `benchmarks/` และไฟล์ README  
 
-The figures are the published benchmark medians (5 everyday tasks: email
-validator, debounce, CSV sum, countdown timer, rate limiter; three models:
-Haiku, Sonnet, Opus). They are measured, not computed from the current repo.
-Source: `benchmarks/` and the README.
-
-## Scoreboard
-
-Render plain ASCII bars. The bar length shows the measured range; the label
-carries the exact figure:
+## บอร์ดผลลัพธ์  
+แสดงเป็นแถบตัวอักษรธรรมดา (ASCII) ความยาวของแถบแสดงช่วงค่าที่วัดได้ ส่วนลาเบลระบุตัวเลขแน่นอน:  
 
 ```
-  ponytail gain                     benchmark median · 5 tasks · 3 models
+   ponytail gain                     benchmark median · 5 tasks · 3 models
+    Lines of code   no-skill  ████████████████████  100%
+                    ponytail  ██▌·················    6–20%   ▼ 80–94%
+    Cost            no-skill  ████████████████████  100%
+                    ponytail  █████▌··············   23–53%  ▼ 47–77%
+    Speed           ponytail  ▸ 3–6× faster
 
-  Lines of code   no-skill  ████████████████████  100%
-                  ponytail  ██▌·················    6–20%   ▼ 80–94%
-  Cost            no-skill  ████████████████████  100%
-                  ponytail  █████▌··············   23–53%  ▼ 47–77%
-  Speed           ponytail  ▸ 3–6× faster
+    This repo:  /ponytail-debt  (shortcuts you deferred)
+                /ponytail-audit (what's still cuttable)
+```  
 
-  This repo:  /ponytail-debt  (shortcuts you deferred)
-              /ponytail-audit (what's still cuttable)
-```
+## ขอบเขตความโปร่งใส  
+ค่านี้เป็นค่าเฉลี่ยจากการทดสอบ ไม่ใช่ค่าจากโปรเจกต์นี้ โดยเฉพาะอย่างยิ่ง ห้ามแสดงตัวเลขประหยัดตามโปรเจกต์ ("คุณประหยัด X บรรทัด/โทเคน ที่นี่"): เพราะเวอร์ชันที่ยังไม่เสร็จไม่เคยถูกเขียนไว้ จึงไม่มีฐานที่แท้จริงในการเปรียบเทียบในโปรเจกต์จริง ตัวเลขที่แท้จริงสำหรับโปรเจกต์นี้มีแค่จาก `/ponytail-debt` (บัญชีหนี้ที่นับจำนวนไว้) และบอร์ดนี้ชี้ไปยังที่นั่นแทนที่จะสร้างขึ้นเอง  
 
-## Honesty boundary
-
-These are benchmark medians, not this repo. NEVER print a per-repo savings
-number ("you saved X lines/tokens here"): the unbuilt version was never
-written, so there is no real baseline to subtract from in a live repo. The
-only real per-repo figures come from `/ponytail-debt` (a counted ledger), and
-this card points there instead of inventing one.
-
-## Boundaries
-
-One-shot display. Edits nothing, changes no mode.
-"stop ponytail" or "normal mode": revert.
+## ขอบเขตการทำงาน  
+แสดงผลเพียงครั้งเดียว ไม่แก้ไขอะไร ไม่เปลี่ยนโหมด คำสั่ง "stop ponytail" หรือ "normal mode": กลับสู่สถานะปกติ
