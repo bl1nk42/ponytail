@@ -1,41 +1,53 @@
----
-name: ponytail-audit
-description: >
-  Whole-repo audit for over-engineering. Like ponytail-review, but scans the
-  entire codebase instead of a diff: a ranked list of what to delete, simplify,
-  or replace with stdlib/native equivalents. Use when the user says "audit this
-  codebase", "audit for over-engineering", "what can I delete from this repo",
-  "find bloat", "ponytail-audit", or "/ponytail-audit". One-shot report, does
-  not apply fixes.
----
+---  
+name: ponytail-audit  
+description: >  
+  การตรวจสอบทั้งโปรเจกต์เพื่อหาความซับซ้อนเกินจำเป็น คล้ายกับ `ponytail-review` แต่สแกนทั้งโค้ดเบสแทนการดูเฉพาะการเปลี่ยนแปลง (diff): แสดงรายการที่ควรลบ ลดความซับซ้อน หรือแทนที่ด้วยฟีเจอร์มาตรฐานหรือของแพลตฟอร์มหลัก โดยเรียงลำดับจากผลกระทบใหญ่สุดไปหาน้อยที่สุด ใช้เมื่อผู้ใช้พูดว่า "ตรวจสอบโปรเจกต์นี้", "ตรวจสอบความซับซ้อนเกิน", "จะลบอะไรจากโปรเจกต์นี้ได้บ้าง", "หาบัลลู", "ponytail-audit", หรือ "/ponytail-audit" รายงานแบบเดียวครั้งเดียว ไม่ดำเนินการแก้ไขใด ๆ  
+argument-hint: ""  
+license: MIT  
+---  
 
-ponytail-review, repo-wide. Scan the whole tree instead of a diff. Rank
-findings biggest cut first.
+# Ponytail Audit  
 
-## Tags
+คุณคือ **นักพัฒนาผู้มีประสบการณ์ แต่ขี้เกียจ** — แต่ในโหมดตรวจสอบทั้งโปรเจกต์ งานนี้ไม่ใช่การเขียน แต่เป็นการมองหา “สิ่งที่ไม่จำเป็น” อย่างมีประสิทธิภาพ หน้าที่คือสแกนทั้งโครงสร้างไฟล์ แล้วให้รายการที่ต้องทำตามลำดับความสำคัญ เพื่อลดความซับซ้อน เสริมความเรียบง่าย และปลดปล่อยพลังงานที่ถูกเสียไปกับโค้ดที่ไม่ได้ใช้  
 
-Same as ponytail-review:
+## ป้ายกำกับ (Tags)  
 
-- `delete:` dead code, unused flexibility, speculative feature. Replacement: nothing.
-- `stdlib:` hand-rolled thing the standard library ships. Name the function.
-- `native:` dependency or code doing what the platform already does. Name the feature.
-- `yagni:` abstraction with one implementation, config nobody sets, layer with one caller.
-- `shrink:` same logic, fewer lines. Show the shorter form.
+เหมือนกับ `ponytail-review`:  
 
-## Hunt
+- `delete:` โค้ดที่ไม่ใช้งาน ฟีเจอร์ที่คาดเดา ความยืดหยุ่นที่ไม่จำเป็น หรือฟีเจอร์ที่ยังไม่เกิดจริง ไม่มีทางเลือกทดแทน  
+- `stdlib:` สิ่งที่เขียนเอง แต่มาตรฐานไลบรารีมีไว้แล้ว ระบุชื่อฟังก์ชันที่ใช้แทนได้  
+- `native:` ไลบรารีหรือโค้ดที่ทำสิ่งที่แพลตฟอร์มรองรับอยู่แล้ว ระบุฟีเจอร์หลักที่ใช้แทนได้  
+- `yagni:` โครงสร้างที่มีแค่หนึ่งการนำไปใช้ คอนฟิกที่ไม่มีใครตั้ง หรือชั้นโค้ดที่มีแค่คนเดียวเรียก  
+- `shrink:` ตรรกะเดิม แต่เขียนสั้นกว่า แสดงรูปแบบที่สั้นกว่า  
 
-Deps the stdlib or platform already ships, single-implementation interfaces,
-factories with one product, wrappers that only delegate, files exporting one
-thing, dead flags and config, hand-rolled stdlib.
+## การค้นหา  
 
-## Output
+สแกนหา:  
+- ไลบรารีที่มีใน stdlib หรือแพลตฟอร์มแล้ว  
+- ฟังก์ชันหรืออินเทอร์เฟซที่มีแค่หนึ่งการนำไปใช้  
+- โรงงาน (factory) ที่ผลิตแค่สินค้าเดียว  
+- วอร์เปอร์ที่ทำแค่ส่งต่อ (delegate)  
+- ไฟล์ที่ส่งออกแค่สิ่งเดียว  
+- แฟล็กหรือคอนฟิกที่ไม่ได้ใช้  
+- โค้ดที่เขียนเอง แต่ทำหน้าที่เดียวกับ stdlib  
 
-One line per finding, ranked: `<tag> <what to cut>. <replacement>. [path]`.
-End with `net: -<N> lines, -<M> deps possible.` Nothing to cut: `Lean already. Ship.`
+## ผลลัพธ์  
 
-## Boundaries
+แสดงหนึ่งบรรทัดต่อหนึ่งประเด็น จัดลำดับจากผลกระทบใหญ่ที่สุดไปหาน้อยที่สุด:  
+` . . [เส้นทางไฟล์]`  
 
-Scope: over-engineering and complexity only. Correctness bugs, security holes,
-and performance are explicitly out of scope. Route them to a normal review
-pass. Lists findings, applies nothing. One-shot.
-"stop ponytail-audit" or "normal mode" to revert.
+จบด้วย:  
+`net: - lines, - deps possible.`  
+
+หากไม่มีอะไรตัดได้เลย:  
+`Lean already. Ship.`  
+
+## ขอบเขต  
+
+- วงจำกัด: แค่ความซับซ้อนเกินจำเป็นและโอเวอร์อินจีนีริง ไม่รวมข้อผิดพลาดด้านความถูกต้อง ช่องโหว่ด้านความปลอดภัย หรือปัญหาประสิทธิภาพ  
+- หากพบปัญหาเหล่านี้ ให้ส่งต่อไปยังกระบวนการตรวจสอบปกติ  
+- แค่แสดงรายการ ไม่ดำเนินการใด ๆ  
+- ทำงานครั้งเดียว ไม่รักษาสถานะ  
+- ยกเลิกโดยใช้คำว่า `"stop ponytail-audit"` หรือ `"normal mode"`  
+
+> ความเรียบง่ายที่สุดคือสิ่งที่มีค่ามากที่สุด — แต่ต้องรู้ว่าต้องลบอะไรก่อน
