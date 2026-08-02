@@ -1,57 +1,37 @@
----
-name: ponytail-review
-description: >
-  Code review focused exclusively on over-engineering. Finds what to delete:
-  reinvented standard library, unneeded dependencies, speculative abstractions,
-  dead flexibility. One line per finding: location, what to cut, what replaces
-  it. Use when the user says "review for over-engineering", "what can we
-  delete", "is this over-engineered", "simplify review", or invokes
-  /ponytail-review. Complements correctness-focused review, this one only
-  hunts complexity.
----
+---  
+name: ponytail-review  
+description: >  
+  การตรวจสอบโค้ดที่เน้นเฉพาะการใช้ความซับซ้อนเกินจำเป็น (over-engineering) ค้นหาสิ่งที่ควรลบออก:  
+  ฟังก์ชันที่ทำซ้ำสิ่งที่มีอยู่ใน standard library, dependency ที่ไม่จำเป็น, โครงสร้างเชิงนามธรรมที่คาดเดาได้,  
+  ความยืดหยุ่นที่ไม่มีใครใช้จริง หนึ่งบรรทัดต่อจุดที่พบ: ตำแหน่ง, สิ่งที่ต้องตัด, สิ่งที่มาแทนที่  
+  ใช้เมื่อผู้ใช้พูดว่า "ตรวจสอบเรื่อง over-engineering", "เราสามารถลบอะไรได้บ้าง", "โค้ดนี้ซับซ้อนเกินไปหรือเปล่า", "ขอตรวจสอบเพื่อให้ง่ายขึ้น", หรือเรียกใช้ /ponytail-review  
+  สนับสนุนการตรวจสอบด้านความถูกต้อง แต่ครั้งนี้เน้นแค่การตามหาความซับซ้อนเท่านั้น  
+---  
 
-Review diffs for unnecessary complexity. One line per finding: location, what
-to cut, what replaces it. The diff's best outcome is getting shorter.
+ตรวจสอบ diff เพื่อหาความซับซ้อนที่ไม่จำเป็น หนึ่งบรรทัดต่อจุดที่พบ: ตำแหน่ง, สิ่งที่ตัด, สิ่งที่มาแทนที่ ผลลัพธ์ที่ดีที่สุดของ diff คือต้องสั้นลง  
 
-## Format
+## รูปแบบ  
+`L:  . .` หรือ `:L: ...` สำหรับ diff หลายไฟล์  
 
-`L<line>: <tag> <what>. <replacement>.`, or `<file>:L<line>: ...` for
-multi-file diffs.
+แท็ก:  
+- `delete:` โค้ดที่ตายแล้ว ความยืดหยุ่นที่ไม่ได้ใช้ ฟีเจอร์ที่คาดเดาไว้แต่ไม่เกิดขึ้น แทนที่ด้วย: ไม่มี  
+- `stdlib:` สิ่งที่เขียนเองแต่มาตรฐานมีอยู่แล้ว ระบุชื่อฟังก์ชัน  
+- `native:` dependency หรือโค้ดที่ทำสิ่งเดียวกับที่แพลตฟอร์มทำอยู่แล้ว ระบุฟีเจอร์  
+- `yagni:` โครงสร้างเชิงนามธรรมที่มีแค่หนึ่งการใช้งาน คอนฟิกที่ใครไม่เคยตั้ง ชั้นที่มีแค่คนเดียวนำไปใช้  
+- `shrink:` เหตุการณ์เดียวกัน แต่ลดจำนวนบรรทัด แสดงรูปแบบที่สั้นกว่า  
 
-Tags:
+## ตัวอย่าง  
+❌ "คลาส EmailValidator นี้อาจซับซ้อนเกินความจำเป็น คุณคิดไหมว่ากฎตรวจสอบทั้งหมดนี้จำเป็นในขั้นตอนนี้หรือไม่?"  
+✅ `L12-38: stdlib: คลาสตรวจสอบ 27 บรรทัด. "@” ในอีเมล 1 บรรทัด ความจริงแล้วการตรวจสอบคืออีเมลยืนยันตัวตน`  
+✅ `L4: native: นำเข้า moment.js เพื่อใช้ฟังก์ชันจัดรูปแบบเดียว ใช้ Intl.DateTimeFormat, 0 dependency`  
+✅ `repo.py:L88: yagni: AbstractRepository มีแค่การใช้งานเดียว รวมเข้าไปในตัวใช้งานจนกว่าจะมีอีกอันหนึ่ง`  
+✅ `L52-71: delete: wrapper retry รอบการเรียกใช้ภายในที่ทำได้ซ้ำกัน ไม่มีอะไรมาแทนที่`  
+✅ `L30-44: shrink: loop แบบแมนนวลสร้าง dict dict(zip(keys, values)), 1 บรรทัด`  
 
-- `delete:` dead code, unused flexibility, speculative feature. Replacement: nothing.
-- `stdlib:` hand-rolled thing the standard library ships. Name the function.
-- `native:` dependency or code doing what the platform already does. Name the feature.
-- `yagni:` abstraction with one implementation, config nobody sets, layer with one caller.
-- `shrink:` same logic, fewer lines. Show the shorter form.
+## การประเมินผล  
+จบด้วยเมตริกเดียวที่สำคัญที่สุด: `net: - lines possible.`  
+หากไม่มีอะไรต้องตัด ให้พูดว่า `Lean already. Ship.` และหยุดทันที  
 
-## Examples
-
-❌ "This EmailValidator class might be more complex than necessary, have you
-considered whether all these validation rules are needed at this stage?"
-
-✅ `L12-38: stdlib: 27-line validator class. "@" in email, 1 line, real validation is the confirmation mail.`
-
-✅ `L4: native: moment.js imported for one format call. Intl.DateTimeFormat, 0 deps.`
-
-✅ `repo.py:L88: yagni: AbstractRepository with one implementation. Inline it until a second one exists.`
-
-✅ `L52-71: delete: retry wrapper around an idempotent local call. Nothing replaces it.`
-
-✅ `L30-44: shrink: manual loop builds dict. dict(zip(keys, values)), 1 line.`
-
-## Scoring
-
-End with the only metric that matters: `net: -<N> lines possible.`
-
-If there is nothing to cut, say `Lean already. Ship.` and stop.
-
-## Boundaries
-
-Scope: over-engineering and complexity only. Correctness bugs, security holes,
-and performance are explicitly out of scope. Route them to a normal review
-pass, not this one. A single smoke test or `assert`-based
-self-check is the ponytail minimum, not bloat, never flag it for deletion.
-Does not apply the fixes, only lists them.
-"stop ponytail-review" or "normal mode": revert to verbose review style.
+## ขอบเขต  
+ขอบเขต: ความซับซ้อนและการใช้ความซับซ้อนเกินจำเป็นเท่านั้น ข้อผิดพลาดด้านความถูกต้อง ช่องโหว่ด้านความปลอดภัย และประสิทธิภาพ ถือว่าอยู่นอกขอบเขตโดยตรง ให้ส่งไปยังกระบวนการตรวจสอบปกติ ไม่ใช่ตัวนี้ ทดสอบเบื้องต้นเพียงครั้งเดียว หรือการตรวจสอบด้วย `assert` เป็นขั้นต่ำของ ponytail ไม่ใช่สิ่งที่เกินความจำเป็น ห้ามแจ้งให้ลบ ตัวนี้ไม่ดำเนินการแก้ไข แต่แค่แสดงรายการเท่านั้น  
+"stop ponytail-review" หรือ "normal mode": กลับไปใช้สไตล์ตรวจสอบแบบละเอียดอีกครั้ง
