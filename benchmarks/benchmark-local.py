@@ -16,6 +16,7 @@ import re
 import time
 import urllib.request
 import urllib.parse
+import opik
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -53,6 +54,7 @@ def count_loc(text):
     )
 
 
+@opik.track(type="llm")
 def call_ollama(model, system_prompt, user_prompt, ollama_url):
     messages = []
     if system_prompt:
@@ -144,6 +146,7 @@ def run(model, repeat, ollama_url):
     print(f"\nFull responses -> {out}")
 
 
+@opik.track(entrypoint=True, name="ponytail-benchmark-local", project_name="ponytail-benchmark")
 def main():
     parser = argparse.ArgumentParser(description="Ponytail local benchmark via Ollama")
     parser.add_argument("--model",      default="llama3.2", help="Ollama model name (default: llama3.2)")
@@ -161,4 +164,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        opik.flush_tracker()

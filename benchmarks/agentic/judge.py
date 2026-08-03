@@ -16,6 +16,7 @@ files only (tests excluded -- a test is not over-engineering). Cost is ~$0.003/c
 ponytail: stdlib urllib for the API call, no requests dependency.
 """
 import argparse, json, os, re, sys, time, urllib.request
+import opik
 from collections import defaultdict
 from pathlib import Path
 
@@ -61,6 +62,7 @@ def source_text(workdir: Path):
         except Exception: continue
     return "\n\n".join(out)
 
+@opik.track(type="llm")
 def judge_call(task_prompt, files, key, retries=3, system=RUBRIC):
     user = f"TASK GIVEN TO THE AUTHOR:\n{task_prompt}\n\nFILES THEY WROTE:\n{files}"
     body = json.dumps({"model": JUDGE_MODEL, "max_tokens": 300, "temperature": 0,
@@ -168,6 +170,7 @@ def run(run_dir, key):
         print(f"  {r['task']:11} {r['arm']:15} {r['model']:7} score={r['over_engineering']} cite={r['cite']}")
     print(f"\nwrote {run_dir / 'judge.json'}")
 
+@opik.track(entrypoint=True, name="ponytail-benchmark-judge", project_name="ponytail-benchmark")
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--selftest", action="store_true")
@@ -182,4 +185,7 @@ def main():
     sys.exit("give --selftest or --run <dir>")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        opik.flush_tracker()

@@ -23,6 +23,7 @@ ponytail: reuses judge.py's HTTP/key/source plumbing instead of duplicating it -
 param is the only delta between the two passes.
 """
 import argparse, json, sys
+import opik
 from collections import defaultdict
 from pathlib import Path
 
@@ -134,6 +135,7 @@ def run(run_dir, key):
         print(f"  {r['task']:13} {r['arm']:15} {r['model']:7} score={r[SCORE_KEY]} missing={r['missing']}")
     print(f"\nwrote {run_dir / 'completeness.json'}")
 
+@opik.track(entrypoint=True, name="ponytail-benchmark-completeness", project_name="ponytail-benchmark")
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--selftest", action="store_true", help="live: judge ranks complete > stub")
@@ -151,4 +153,7 @@ def main():
     sys.exit("give --selftest, --selftest-offline, or --run <dir>")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        opik.flush_tracker()
